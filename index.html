@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>dir to xml</title>
+		<link href="./styles/shCore.css" rel="stylesheet" type="text/css" />
+		<link href="./styles/shThemeRDark.css" rel="stylesheet" type="text/css" />
+		<style type="text/css">
+			body {
+				font-family:sans-serif;
+			}
+			#outputdiv {
+				clear:both;
+				overflow:auto;
+				width: 100%;
+				margin-top: 5px;
+			}
+		</style>
+		<script src="./scripts/wspan-dir-parser.js"></script>
+		<script src="./scripts/xregexp.js"></script>
+		<script src="./scripts/shCore.js"></script>
+		<script src="./scripts/shBrushXml.js"></script>
+		<script type="text/javascript">
+			xmlBrush = new SyntaxHighlighter.brushes.Xml();
+			xmlBrush.init({ toolbar: false, 'class-name':'xml' });
+			function convertDIR() {
+				var DIRText = document.getElementById("input").value;
+				if (DIRText.length > 0) {
+					//DIR0DPN0000003720011P1P0001P1PQL00000001010101000000000000000102908370$00000000000144PNRQ3279P211 2ZOBAW.Y2FS11A*232O3219P15AACTNP14AATXP13AXSP14ACNVP14ACPYP15ADISCP14AEDTP14AEORP14AEOVP13AUSP14AFOPP18AFQA.4*QP13AFRP13AFTP13AGAP13AHAP13AIAP15AIRRMP13ANAP13AOAP14AOTSP13APAP15APCHRP15APCTCP14APTSP13ARAP15ARTNGP13ASAP14ASURP12ATP13ATLP13ATF0.125ROPTS2174IRRM11Y4LINE11Y00
+				
+					var DIRTree = wspanDIR.parseDIRMessage(DIRText);
+					//var stringPre = document.createElement('pre');
+					//stringPre.appendChild(document.createTextNode(DIRTree.toString()));
+					var outputNode = document.getElementById("outputdiv");
+					//outputNode.replaceChild(stringPre, outputNode.firstChild);
+					var plainXML = DIRTree.toXML();
+					var prettyXML = xmlBrush.getHtml(plainXML);
+					
+					//var xmlPre = document.createElement('pre');
+					//xmlPre.appendChild(document.createTextNode(plainXML));
+					//outputNode.replaceChild(xmlPre, outputNode.lastChild);
+					outputNode.innerHTML = prettyXML;
+				}
+				return false;
+			}
+		</script>
+	</head>
+	<body>
+		<form onsubmit="convertDIR();resizeOutput();return false;">
+			<div id="DIR_Text">
+				<textarea id="input" style="width:100%;min-height:75px;"></textarea>
+			</div>
+			<div id="buttondiv">
+				<input name="submit" id="submit" type="submit" value="Convert" />
+			</div>
+		</form>
+		<div id="outputdiv">
+			<pre></pre>
+		</div>
+		<script type="text/javascript">
+			window.onload = function() {
+				resizeOutput();
+			}
+			
+			window.onresize = resizeOutput;
+			
+			function resizeOutput() {
+				window.setTimeout(function() {resizeElementHeight(document.getElementById('outputdiv'))}, 50);
+			}
+			
+			//display handling
+			//http://stackoverflow.com/questions/33080/setting-the-height-of-a-div-dynamically
+			function resizeElementHeight(element) {
+				var height = 0;
+				var body = window.document.body;
+				if (window.innerHeight) {
+					height = window.innerHeight;
+				} else if (body.parentElement.clientHeight) {
+					height = body.parentElement.clientHeight;
+				} else if (body && body.clientHeight) {
+					height = body.clientHeight;
+				}
+				element.style.height = (((height - element.offsetTop) - 10) + "px");
+			}
+		</script>
+	</body>
+</html>
